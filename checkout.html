@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Checkout | L'Élégance</title>
+</head>
+<body class="bg-white">
+    <main class="max-w-3xl mx-auto px-6 py-16">
+        <h1 class="text-2xl font-bold uppercase mb-12 text-center">Finalizar Pedido</h1>
+        
+        <form class="space-y-12">
+            <section>
+                <h2 class="font-bold uppercase text-sm mb-6 flex items-center"><span class="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center mr-2 text-[10px]">1</span> Datos Personales</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" placeholder="Nombre" class="border p-3 w-full outline-none focus:border-black transition">
+                    <input type="email" placeholder="Email" class="border p-3 w-full outline-none focus:border-black transition">
+                </div>
+            </section>
+
+            <section>
+                <h2 class="font-bold uppercase text-sm mb-6 flex items-center"><span class="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center mr-2 text-[10px]">2</span> Dirección de Entrega</h2>
+                <input type="text" placeholder="Calle y número" class="border p-3 w-full mb-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" placeholder="Ciudad" class="border p-3 w-full">
+                    <input type="text" placeholder="Código Postal" class="border p-3 w-full">
+                </div>
+            </section>
+
+            <section>
+                <h2 class="font-bold uppercase text-sm mb-6 flex items-center"><span class="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center mr-2 text-[10px]">3</span> Pago con Tarjeta</h2>
+                <div class="border p-6 rounded bg-gray-50">
+                    <input type="text" placeholder="Número de tarjeta" class="border p-3 w-full mb-4 bg-white">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" placeholder="MM/YY" class="border p-3 w-full bg-white">
+                        <input type="text" placeholder="CVV" class="border p-3 w-full bg-white">
+                    </div>
+                </div>
+            </section>
+
+            <button type="submit" class="w-full bg-black text-white py-5 uppercase font-bold tracking-widest hover:bg-gray-800 transition">
+                Confirmar y Pagar 145.20€
+            </button>
+        </form>
+    </main>
+</body>
+</html>

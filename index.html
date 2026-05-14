@@ -1,46 +1,515 @@
-​
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgentHub - Dashboard</title>
-    <!-- Esto conecta Tailwind CSS para que puedas usar sus clases -->
+    <title>AgentHub Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class"
+        };
+    </script>
+    <style>
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .collapsible-content.open {
+            max-height: 240px;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-200">
 
-    <!-- Contenedor Principal -->
-    <div class="flex min-h-screen">
-        
-        <!-- Aquí irá tu Sidebar (Menú lateral) -->
-        <aside class="w-64 bg-slate-800 text-white p-6">
-            <h1 class="text-2xl font-bold mb-10">AgentHub</h1>
-            <nav>
-                <ul class="space-y-4">
-                    <li><a href="#" class="hover:text-blue-400">Dashboard</a></li>
-                    <li><a href="#" class="hover:text-blue-400">Agentes</a></li>
-                </ul>
-            </nav>
-        </aside>
+    <div class="flex h-screen overflow-hidden">
+        <nav class="hidden md:flex w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex-col">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">AgentHub</h1>
+            </div>
+            <ul class="flex-1 px-4 space-y-2 overflow-y-auto">
+                <li>
+                    <button onclick="showSection('dashboard')" class="nav-link w-full text-left px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium transition-colors" data-section="dashboard">
+                        Dashboard
+                    </button>
+                </li>
+                <li>
+                    <button onclick="showSection('usuarios')" class="nav-link w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors" data-section="usuarios">
+                        Usuarios
+                    </button>
+                </li>
+                <li>
+                    <button onclick="showSection('agentes')" class="nav-link w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors" data-section="agentes">
+                        Agentes
+                    </button>
+                </li>
+                <li>
+                    <button onclick="showSection('skills')" class="nav-link w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors" data-section="skills">
+                        Skills
+                    </button>
+                </li>
+                <li>
+                    <button onclick="showSection('contratos')" class="nav-link w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors" data-section="contratos">
+                        Contrataciones
+                    </button>
+                </li>
+                <li>
+                    <button onclick="showSection('errores')" class="nav-link w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors" data-section="errores">
+                        Log de Errores
+                    </button>
+                </li>
+            </ul>
+        </nav>
 
-        <!-- Aquí irá tu contenido principal -->
-        <main class="flex-1 p-10">
-            <h2 class="text-3xl font-semibold mb-6">Panel de Control</h2>
-            
-            <!-- Tarjetas de ejemplo -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
-                    <p class="text-gray-500">Agentes Activos</p>
-                    <p class="text-3xl font-bold">12</p>
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="h-16 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8">
+                <div class="flex items-center gap-3">
+                    <button class="md:hidden p-2 rounded-lg border border-gray-200 dark:border-slate-700" onclick="toggleMobileMenu()">Menu</button>
+                    <h2 id="section-title" class="text-xl font-semibold">Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors" aria-label="Cambiar tema">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">A</div>
+                </div>
+            </header>
+
+            <div id="mobile-nav" class="md:hidden hidden bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 px-4 py-3">
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="showSection('dashboard'); closeMobileMenu()" class="text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">Dashboard</button>
+                    <button onclick="showSection('usuarios'); closeMobileMenu()" class="text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">Usuarios</button>
+                    <button onclick="showSection('agentes'); closeMobileMenu()" class="text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">Agentes</button>
+                    <button onclick="showSection('skills'); closeMobileMenu()" class="text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">Skills</button>
+                    <button onclick="showSection('contratos'); closeMobileMenu()" class="text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">Contrataciones</button>
+                    <button onclick="showSection('errores'); closeMobileMenu()" class="text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">Log de Errores</button>
                 </div>
             </div>
-        </main>
 
+            <main class="flex-1 overflow-y-auto p-4 md:p-8">
+                <section id="dashboard" class="content-section space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border-l-4 border-green-500">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Ingresos Totales</p>
+                            <p class="text-2xl font-bold">$50,200.00</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border-l-4 border-red-400">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Perdida por Descuentos</p>
+                            <p class="text-2xl font-bold">$1,200.50</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Agentes Activos</p>
+                            <p class="text-2xl font-bold">124</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Agentes Fallando</p>
+                            <p class="text-2xl font-bold text-orange-600 dark:text-orange-400">3</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-64 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-xl flex items-center justify-center bg-gray-50/50 dark:bg-slate-800/50">
+                        <span class="text-gray-400 font-medium text-center px-4">Grafico de Actividad Semanal (Visualizacion proximamente)</span>
+                    </div>
+                </section>
+
+                <section id="usuarios" class="content-section hidden">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[780px]">
+                                <thead class="bg-gray-50 dark:bg-slate-700/50">
+                                    <tr>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Nombre</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Email</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Plan</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Estado</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm font-medium">Juan Perez</td>
+                                        <td class="p-4 text-sm text-gray-500">juan@empresa.com</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">Pro</span></td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Activo</span></td>
+                                        <td class="p-4 text-right">
+                                            <div class="dropdown-wrapper relative inline-block">
+                                                <button onclick="toggleDropdown('drop-u1', event)" class="p-1 hover:bg-gray-200 dark:hover:bg-slate-600 rounded">⋮</button>
+                                                <div id="drop-u1" class="dropdown-menu hidden absolute right-0 top-8 w-32 bg-white dark:bg-slate-800 border dark:border-slate-700 shadow-lg rounded-lg z-10 py-2">
+                                                    <button onclick="openModal('modal-detalle')" class="w-full text-left px-4 py-1 text-sm hover:bg-blue-50 dark:hover:bg-slate-700">Ver detalle</button>
+                                                    <button class="w-full text-left px-4 py-1 text-sm hover:bg-red-50 text-red-500 dark:hover:bg-red-900/20">Eliminar</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm font-medium">Maria Lozano</td>
+                                        <td class="p-4 text-sm text-gray-500">maria@startup.io</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">Enterprise</span></td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Activo</span></td>
+                                        <td class="p-4 text-right">-</td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm font-medium">Carlos Rivas</td>
+                                        <td class="p-4 text-sm text-gray-500">carlos@vision.dev</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">Pro</span></td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">En prueba</span></td>
+                                        <td class="p-4 text-right">-</td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm font-medium">Elena Soto</td>
+                                        <td class="p-4 text-sm text-gray-500">elena@agency.com</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-gray-200 text-gray-800 dark:bg-slate-700 dark:text-slate-200">Basico</span></td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">Inactivo</span></td>
+                                        <td class="p-4 text-right">-</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm font-medium">Rafael Mendez</td>
+                                        <td class="p-4 text-sm text-gray-500">rafael@fintech.ai</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">Pro</span></td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Activo</span></td>
+                                        <td class="p-4 text-right">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="agentes" class="content-section hidden">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[820px]">
+                                <thead class="bg-gray-50 dark:bg-slate-700/50">
+                                    <tr>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Agente</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Tipo</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Version</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Estado</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Uso 24h</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Skills</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm font-medium">CyberSentinel-1</td>
+                                        <td class="p-4 text-sm">Seguridad</td>
+                                        <td class="p-4 text-sm">v2.4.1</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Operativo</span></td>
+                                        <td class="p-4 text-sm">98.7%</td>
+                                        <td class="p-4 text-sm"><button onclick="toggleSkills('agent-s1')" class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600">Expandir</button></td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700">
+                                        <td colspan="6" class="px-4 pb-3">
+                                            <div id="agent-s1" class="collapsible-content text-sm text-gray-600 dark:text-gray-300">
+                                                <div class="pt-2">Monitoreo de intrusion, deteccion de fraude, respuesta automatizada de incidentes.</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm font-medium">MarketPulse-AI</td>
+                                        <td class="p-4 text-sm">Analitica</td>
+                                        <td class="p-4 text-sm">v3.0.0</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Operativo</span></td>
+                                        <td class="p-4 text-sm">94.3%</td>
+                                        <td class="p-4 text-sm"><button onclick="toggleSkills('agent-s2')" class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600">Expandir</button></td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700">
+                                        <td colspan="6" class="px-4 pb-3">
+                                            <div id="agent-s2" class="collapsible-content text-sm text-gray-600 dark:text-gray-300">
+                                                <div class="pt-2">Prediccion de demanda, segmentacion de audiencias, optimizacion de conversion.</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm font-medium">DocuMind-ES</td>
+                                        <td class="p-4 text-sm">NLP</td>
+                                        <td class="p-4 text-sm">v1.8.2</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">Degradado</span></td>
+                                        <td class="p-4 text-sm">81.5%</td>
+                                        <td class="p-4 text-sm"><button onclick="toggleSkills('agent-s3')" class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600">Expandir</button></td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700">
+                                        <td colspan="6" class="px-4 pb-3">
+                                            <div id="agent-s3" class="collapsible-content text-sm text-gray-600 dark:text-gray-300">
+                                                <div class="pt-2">Extraccion de entidades legales, resumen inteligente, clasificacion de contratos.</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm font-medium">VentasBot-Latam</td>
+                                        <td class="p-4 text-sm">Atencion al cliente</td>
+                                        <td class="p-4 text-sm">v2.1.9</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">Con fallas</span></td>
+                                        <td class="p-4 text-sm">69.2%</td>
+                                        <td class="p-4 text-sm"><button onclick="toggleSkills('agent-s4')" class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600">Expandir</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="px-4 pb-3">
+                                            <div id="agent-s4" class="collapsible-content text-sm text-gray-600 dark:text-gray-300">
+                                                <div class="pt-2">Enrutamiento omnicanal, recomendacion de respuestas, seguimiento de tickets.</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="skills" class="content-section hidden space-y-4">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
+                        <button onclick="toggleSkills('skill-s1')" class="w-full flex items-center justify-between text-left py-2">
+                            <span class="font-semibold">Deteccion de anomalias</span>
+                            <span>+</span>
+                        </button>
+                        <div id="skill-s1" class="collapsible-content pt-0">
+                            <p class="pt-3 text-sm text-gray-600 dark:text-gray-300">Identifica patrones irregulares en trafico y actividad transaccional en tiempo real.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
+                        <button onclick="toggleSkills('skill-s2')" class="w-full flex items-center justify-between text-left py-2">
+                            <span class="font-semibold">Clasificacion documental</span>
+                            <span>+</span>
+                        </button>
+                        <div id="skill-s2" class="collapsible-content pt-0">
+                            <p class="pt-3 text-sm text-gray-600 dark:text-gray-300">Extrae entidades y categoriza contratos, facturas y solicitudes con modelos NLP.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
+                        <button onclick="toggleSkills('skill-s3')" class="w-full flex items-center justify-between text-left py-2">
+                            <span class="font-semibold">Forecast comercial</span>
+                            <span>+</span>
+                        </button>
+                        <div id="skill-s3" class="collapsible-content pt-0">
+                            <p class="pt-3 text-sm text-gray-600 dark:text-gray-300">Proyecta conversiones y ventas por segmento para ajustar campanas y presupuesto.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
+                        <button onclick="toggleSkills('skill-s4')" class="w-full flex items-center justify-between text-left py-2">
+                            <span class="font-semibold">Orquestacion multiagente</span>
+                            <span>+</span>
+                        </button>
+                        <div id="skill-s4" class="collapsible-content pt-0">
+                            <p class="pt-3 text-sm text-gray-600 dark:text-gray-300">Coordina agentes de soporte, compliance y ventas para responder flujos complejos.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="contratos" class="content-section hidden">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[780px]">
+                                <thead class="bg-gray-50 dark:bg-slate-700/50">
+                                    <tr>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Cliente</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Agente asignado</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Inicio</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Monto</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">BankNova</td>
+                                        <td class="p-4 text-sm font-medium">CyberSentinel-1</td>
+                                        <td class="p-4 text-sm">2026-03-12</td>
+                                        <td class="p-4 text-sm">$22,000</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Vigente</span></td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">RetailMax</td>
+                                        <td class="p-4 text-sm font-medium">MarketPulse-AI</td>
+                                        <td class="p-4 text-sm">2026-01-20</td>
+                                        <td class="p-4 text-sm">$14,500</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Vigente</span></td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">LexCloud</td>
+                                        <td class="p-4 text-sm font-medium">DocuMind-ES</td>
+                                        <td class="p-4 text-sm">2025-11-05</td>
+                                        <td class="p-4 text-sm">$9,800</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">Renovacion</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">Contactiva</td>
+                                        <td class="p-4 text-sm font-medium">VentasBot-Latam</td>
+                                        <td class="p-4 text-sm">2026-02-01</td>
+                                        <td class="p-4 text-sm">$11,200</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">En riesgo</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="errores" class="content-section hidden">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[860px]">
+                                <thead class="bg-gray-50 dark:bg-slate-700/50">
+                                    <tr>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Fecha</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Agente</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Codigo</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Descripcion</th>
+                                        <th class="p-4 font-semibold border-b dark:border-slate-700">Severidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">2026-05-06 09:14</td>
+                                        <td class="p-4 text-sm font-medium">CyberSentinel-1</td>
+                                        <td class="p-4 text-sm">SEC-403</td>
+                                        <td class="p-4 text-sm">Token expirado en servicio de monitoreo externo.</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">Media</span></td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">2026-05-06 16:02</td>
+                                        <td class="p-4 text-sm font-medium">DocuMind-ES</td>
+                                        <td class="p-4 text-sm">NLP-422</td>
+                                        <td class="p-4 text-sm">Timeout durante parseo de documento de gran tamano.</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-700">Alta</span></td>
+                                    </tr>
+                                    <tr class="border-b dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">2026-05-07 08:21</td>
+                                        <td class="p-4 text-sm font-medium">VentasBot-Latam</td>
+                                        <td class="p-4 text-sm">CRM-500</td>
+                                        <td class="p-4 text-sm">Error de sincronizacion con API CRM regional.</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">Critica</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">2026-05-07 09:03</td>
+                                        <td class="p-4 text-sm font-medium">MarketPulse-AI</td>
+                                        <td class="p-4 text-sm">AN-301</td>
+                                        <td class="p-4 text-sm">Metrica incompleta por lote de eventos faltantes.</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700">Baja</span></td>
+                                    </tr>
+                                    <tr class="border-t dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">2026-05-07 10:40</td>
+                                        <td class="p-4 text-sm font-medium">CyberSentinel-1</td>
+                                        <td class="p-4 text-sm">SEC-511</td>
+                                        <td class="p-4 text-sm">Reintentos excesivos desde IP no confiable, bloqueo preventivo aplicado.</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-700">Alta</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-slate-700/30">
+                                        <td class="p-4 text-sm">2026-05-07 11:08</td>
+                                        <td class="p-4 text-sm font-medium">DocuMind-ES</td>
+                                        <td class="p-4 text-sm">NLP-207</td>
+                                        <td class="p-4 text-sm">Modelo sin memoria disponible para lote concurrente de OCR.</td>
+                                        <td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">Critica</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
     </div>
 
+    <div id="modal-detalle" class="modal fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm backdrop-trigger"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 mx-4">
+            <h3 class="text-xl font-bold mb-4">Detalle del Registro</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Aqui se mostraria la informacion extendida del registro seleccionado, manteniendo la consistencia de datos hardcodeados.</p>
+            <div class="flex justify-end">
+                <button onclick="closeModals()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll(".content-section").forEach((section) => section.classList.add("hidden"));
+            document.getElementById(sectionId).classList.remove("hidden");
+
+            const titles = {
+                dashboard: "Dashboard",
+                usuarios: "Gestion de Usuarios",
+                agentes: "Gestion de Agentes",
+                skills: "Catalogo de Skills",
+                contratos: "Contrataciones",
+                errores: "Log de Errores"
+            };
+
+            document.getElementById("section-title").innerText = titles[sectionId];
+
+            document.querySelectorAll(".nav-link").forEach((link) => {
+                link.classList.remove("bg-blue-50", "dark:bg-blue-900/30", "text-blue-700", "dark:text-blue-400", "font-medium");
+                if (link.dataset.section === sectionId) {
+                    link.classList.add("bg-blue-50", "dark:bg-blue-900/30", "text-blue-700", "dark:text-blue-400", "font-medium");
+                }
+            });
+        }
+
+        const themeToggle = document.getElementById("theme-toggle");
+        const themeIcon = document.getElementById("theme-icon");
+
+        function updateTheme() {
+            const shouldUseDark = localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+            if (shouldUseDark) {
+                document.documentElement.classList.add("dark");
+                themeIcon.innerText = "☀️";
+            } else {
+                document.documentElement.classList.remove("dark");
+                themeIcon.innerText = "🌙";
+            }
+        }
+
+        themeToggle.addEventListener("click", () => {
+            if (document.documentElement.classList.contains("dark")) {
+                localStorage.theme = "light";
+            } else {
+                localStorage.theme = "dark";
+            }
+            updateTheme();
+        });
+
+        function toggleDropdown(id, event) {
+            event.stopPropagation();
+            document.querySelectorAll(".dropdown-menu").forEach((menu) => {
+                if (menu.id !== id) {
+                    menu.classList.add("hidden");
+                }
+            });
+            document.getElementById(id).classList.toggle("hidden");
+        }
+
+        function toggleSkills(id) {
+            document.getElementById(id).classList.toggle("open");
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeModals() {
+            document.querySelectorAll(".modal").forEach((modal) => modal.classList.add("hidden"));
+            document.body.style.overflow = "auto";
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById("mobile-nav").classList.toggle("hidden");
+        }
+
+        function closeMobileMenu() {
+            document.getElementById("mobile-nav").classList.add("hidden");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest(".dropdown-wrapper")) {
+                document.querySelectorAll(".dropdown-menu").forEach((menu) => menu.classList.add("hidden"));
+            }
+            if (event.target.classList.contains("backdrop-trigger")) {
+                closeModals();
+            }
+        };
+
+        updateTheme();
+    </script>
 </body>
 </html>
-
-
-Enviado desde Outlook

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | L'Élégance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-900">
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-100">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold tracking-tighter uppercase">L'Élégance</a>
+            <div class="flex items-center space-x-6">
+                <a href="index.html" class="text-sm uppercase font-bold">Inicio</a>
+                <a href="carrito.html" class="relative">Carrito (3)</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-10">
+        <h1 class="text-4xl font-bold mb-8 uppercase tracking-tighter">Colección Completa</h1>
+
+        <section class="flex flex-wrap gap-4 mb-12 border-y py-4 border-gray-100">
+            <select id="categoryFilter" class="bg-gray-50 border-none px-4 py-2 rounded text-sm focus:ring-1 focus:ring-black">
+                <option value="all">Categoría: Todas</option>
+                <option value="Calzado">Calzado</option>
+                <option value="Camisas">Camisas</option>
+                <option value="Pantalones">Pantalones</option>
+            </select>
+            <select id="sizeFilter" class="bg-gray-50 border-none px-4 py-2 rounded text-sm focus:ring-1 focus:ring-black">
+                <option value="all">Talla: Todas</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+            </select>
+            <p id="resultsCount" class="ml-auto text-sm text-gray-500 self-center">Mostrando 20 productos</p>
+        </section>
+
+        <div id="productsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"></div>
+        <script>
+            const products = [
+                { id: 1, name: "Producto Elegante 1", category: "Calzado", size: "S", price: "75.00€" },
+                { id: 2, name: "Producto Elegante 2", category: "Calzado", size: "M", price: "75.00€" },
+                { id: 3, name: "Producto Elegante 3", category: "Calzado", size: "L", price: "75.00€" },
+                { id: 4, name: "Producto Elegante 4", category: "Calzado", size: "XL", price: "75.00€" },
+                { id: 5, name: "Producto Elegante 5", category: "Calzado", size: "S", price: "75.00€" },
+                { id: 6, name: "Producto Elegante 6", category: "Camisas", size: "M", price: "75.00€" },
+                { id: 7, name: "Producto Elegante 7", category: "Camisas", size: "L", price: "75.00€" },
+                { id: 8, name: "Producto Elegante 8", category: "Camisas", size: "XL", price: "75.00€" },
+                { id: 9, name: "Producto Elegante 9", category: "Camisas", size: "S", price: "75.00€" },
+                { id: 10, name: "Producto Elegante 10", category: "Camisas", size: "M", price: "75.00€" },
+                { id: 11, name: "Producto Elegante 11", category: "Pantalones", size: "L", price: "75.00€" },
+                { id: 12, name: "Producto Elegante 12", category: "Pantalones", size: "XL", price: "75.00€" },
+                { id: 13, name: "Producto Elegante 13", category: "Pantalones", size: "S", price: "75.00€" },
+                { id: 14, name: "Producto Elegante 14", category: "Pantalones", size: "M", price: "75.00€" },
+                { id: 15, name: "Producto Elegante 15", category: "Pantalones", size: "L", price: "75.00€" },
+                { id: 16, name: "Producto Elegante 16", category: "Calzado", size: "XL", price: "75.00€" },
+                { id: 17, name: "Producto Elegante 17", category: "Camisas", size: "S", price: "75.00€" },
+                { id: 18, name: "Producto Elegante 18", category: "Pantalones", size: "M", price: "75.00€" },
+                { id: 19, name: "Producto Elegante 19", category: "Calzado", size: "L", price: "75.00€" },
+                { id: 20, name: "Producto Elegante 20", category: "Camisas", size: "XL", price: "75.00€" }
+            ];
+
+            const categoryFilter = document.getElementById("categoryFilter");
+            const sizeFilter = document.getElementById("sizeFilter");
+            const resultsCount = document.getElementById("resultsCount");
+            const productsGrid = document.getElementById("productsGrid");
+            const productImage = "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=400&auto=format&fit=crop";
+
+            function renderProducts(list) {
+                productsGrid.innerHTML = list.map((product) => `
+                    <article class="group cursor-pointer" itemscope itemtype="https://schema.org/Product">
+                        <a href="producto.html">
+                            <div class="aspect-[3/4] bg-gray-100 mb-4 overflow-hidden">
+                                <img src="${productImage}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                            <h3 class="font-bold text-sm uppercase" itemprop="name">${product.name}</h3>
+                            <p class="text-gray-600 text-sm">${product.price}</p>
+                        </a>
+                    </article>
+                `).join("");
+
+                resultsCount.textContent = `Mostrando ${list.length} productos`;
+            }
+
+            function applyFilters() {
+                const selectedCategory = categoryFilter.value;
+                const selectedSize = sizeFilter.value;
+
+                const filteredProducts = products.filter((product) => {
+                    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+                    const matchesSize = selectedSize === "all" || product.size === selectedSize;
+                    return matchesCategory && matchesSize;
+                });
+
+                renderProducts(filteredProducts);
+            }
+
+            categoryFilter.addEventListener("change", applyFilters);
+            sizeFilter.addEventListener("change", applyFilters);
+            renderProducts(products);
+        </script>
+    </main>
+
+    <footer class="bg-gray-50 py-10 mt-20 text-center text-xs text-gray-400 uppercase tracking-widest border-t">
+        L'Élégance © 2026 - París, Francia
+    </footer>
+</body>
+</html>

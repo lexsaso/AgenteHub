@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Detalle de Producto | L'Élégance</title>
+</head>
+<body class="bg-white">
+    <header class="border-b py-4 px-6 flex justify-between uppercase text-xs font-bold tracking-widest">
+        <a href="index.html">Volver</a>
+        <span>L'Élégance</span>
+        <a href="carrito.html">Carrito</a>
+    </header>
+
+    <main class="container mx-auto px-6 py-12" itemscope itemtype="https://schema.org/Product">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+            <div>
+                <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800" alt="Chaqueta" class="w-full h-auto" itemprop="image">
+            </div>
+
+            <div class="flex flex-col justify-center">
+                <span class="text-gray-400 text-sm mb-2" itemprop="productID">REF: 4829-2026</span>
+                <h1 class="text-4xl font-bold mb-4 uppercase tracking-tighter" itemprop="name">Chaqueta de Lino Beige</h1>
+                <p class="text-2xl font-light mb-8" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                    <span itemprop="price">120.00</span>€
+                </p>
+
+                <div class="mb-8">
+                    <label class="block text-xs font-bold uppercase mb-2">Talla</label>
+                    <div class="flex gap-2">
+                        <button class="border w-10 h-10 hover:bg-black hover:text-white transition">S</button>
+                        <button class="border w-10 h-10 bg-black text-white">M</button>
+                        <button class="border w-10 h-10 hover:bg-black hover:text-white transition">L</button>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <label class="block text-xs font-bold uppercase mb-2">Cantidad</label>
+                    <input type="number" value="1" class="border p-2 w-20">
+                </div>
+
+                <button class="bg-black text-white w-full py-4 uppercase font-bold hover:bg-gray-800 transition">
+                    Agregar al carrito
+                </button>
+
+                <div class="mt-12 border-t pt-8">
+                    <h3 class="font-bold uppercase mb-4">Descripción</h3>
+                    <p class="text-gray-600 leading-relaxed" itemprop="description">
+                        Esta prenda ha sido confeccionada con lino 100% orgánico. Ideal para eventos de verano o looks de oficina relajados. Corte entallado y tacto suave.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
